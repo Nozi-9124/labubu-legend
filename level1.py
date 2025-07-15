@@ -1,20 +1,9 @@
 import pygame
 import sys
 
-# === Настройка ===
-pygame.init()
-screen = pygame.display.set_mode((800, 600))
-pygame.display.set_caption("ЛАБУБУ: Уровень 1")
-clock = pygame.time.Clock()
-
 # === Цвета ===
 WHITE = (255, 255, 255)
 GROUND_Y = 500
-
-# === Музыка ===
-pygame.mixer.music.load("assets/audio/level1_music.mp3")
-pygame.mixer.music.set_volume(0.4)
-pygame.mixer.music.play(-1)
 
 # === Игрок ===
 class Player(pygame.sprite.Sprite):
@@ -57,8 +46,18 @@ class Player(pygame.sprite.Sprite):
             self.vel_y = 0
             self.on_ground = True
 
-# === Игровой цикл ===
+# === Главная функция уровня ===
 def run_level_1():
+    pygame.init()
+    screen = pygame.display.set_mode((800, 600))
+    pygame.display.set_caption("ЛАБУБУ: Уровень 1")
+    clock = pygame.time.Clock()
+
+    # Музыка
+    pygame.mixer.music.load("assets/audio/level1_music.mp3")
+    pygame.mixer.music.set_volume(0.4)
+    pygame.mixer.music.play(-1)
+
     player = Player()
     player_group = pygame.sprite.GroupSingle(player)
 
