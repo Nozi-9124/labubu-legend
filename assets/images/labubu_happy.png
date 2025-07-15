@@ -1,43 +1,34 @@
 import pygame
 import sys
-import os
 
-# Инициализация
+# Инициализация Pygame
 pygame.init()
-pygame.mixer.init()
-
-# Окно
 screen = pygame.display.set_mode((800, 600))
-pygame.display.set_caption("ЛАБУБУ: Секрет Бу-Бу-Бу")
+pygame.display.set_caption("ЛАБУБУ: Изображение")
 clock = pygame.time.Clock()
 
-# Цвета
+# Цвет фона
 WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
 
-# Шрифт и заголовок
-font = pygame.font.SysFont(None, 48)
-title = font.render("ЛАБУБУ: Секрет Бу-Бу-Бу", True, BLACK)
-
-# Загрузка изображения ЛАБУБУ
-labubu_img = pygame.image.load("assets/images/labubu_happy.png")
-labubu_img = pygame.transform.scale(labubu_img, (200, 200))
-labubu_rect = labubu_img.get_rect(center=(400, 300))
+# Загрузка изображения
+try:
+    labubu_img = pygame.image.load("assets/images/labubu_happy.png")
+    labubu_img = pygame.transform.scale(labubu_img, (200, 200))  # изменим размер
+    labubu_rect = labubu_img.get_rect(center=(400, 300))
+except pygame.error as e:
+    print("❌ Ошибка загрузки изображения:", e)
+    pygame.quit()
+    sys.exit()
 
 # Основной цикл
 running = True
 while running:
     screen.fill(WHITE)
-    screen.blit(title, (150, 100))
     screen.blit(labubu_img, labubu_rect)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            if labubu_rect.collidepoint(event.pos):
-                print("ЛАБУБУ: Бу-бу-бу!")  # Здесь будет звук
 
     pygame.display.flip()
     clock.tick(60)
