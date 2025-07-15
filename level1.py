@@ -78,3 +78,7 @@ def run_level_1():
         pygame.display.flip()
         clock.tick(60)
 
+# === Запуск при прямом запуске файла ===
+if __name__ == "__main__":
+    run_level_1()
+
