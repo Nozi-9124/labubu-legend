@@ -1,5 +1,14 @@
 import pygame
 import sys
+from level1 import run_level_1  # ← добавь в начало
+
+# ...
+
+elif event.type == pygame.MOUSEBUTTONDOWN:
+    if button_rect.collidepoint(event.pos):
+        print("Переход на уровень 1 🚀")
+        pygame.mixer.music.stop()  # выключаем музыку меню
+        run_level_1()
 
 # Инициализация Pygame
 pygame.init()
