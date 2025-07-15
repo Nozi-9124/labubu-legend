@@ -16,7 +16,7 @@ try:
     labubu_img = pygame.transform.scale(labubu_img, (200, 200))  # изменим размер
     labubu_rect = labubu_img.get_rect(center=(400, 300))
 except pygame.error as e:
-    print("Ошибка загрузки изображения:", e)
+    print("❌ Ошибка загрузки изображения:", e)
     pygame.quit()
     sys.exit()
 
