@@ -5,56 +5,53 @@ import sys
 pygame.init()
 pygame.mixer.init()
 
-# Окно
+# Экран
 screen = pygame.display.set_mode((800, 600))
-pygame.display.set_caption("ЛАБУБУ: Секрет Бу-Бу-Бу")
+pygame.display.set_caption("ЛАБУБУ: Меню")
 clock = pygame.time.Clock()
 
-# Цвет
+# Цвета
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
-# Фон и шрифт
+# Шрифт
 font = pygame.font.SysFont(None, 48)
+
+# Заголовок
 title = font.render("ЛАБУБУ: Секрет Бу-Бу-Бу", True, BLACK)
+
+# Кнопка
+button_text = font.render("▶ Играть", True, (255, 255, 255))
+button_rect = button_text.get_rect(center=(400, 450))
 
 # Загрузка изображения
 labubu_img = pygame.image.load("assets/images/labubu_happy.png")
 labubu_img = pygame.transform.scale(labubu_img, (200, 200))
-labubu_rect = labubu_img.get_rect(center=(400, 280))
+labubu_rect = labubu_img.get_rect(center=(400, 250))
 
-# Загрузка музыки
-try:
-    pygame.mixer.music.load("assets/audio/menu_music.mp3")
-    pygame.mixer.music.set_volume(0.5)
-    pygame.mixer.music.play(-1)
-except pygame.error as e:
-    print("⚠️ Ошибка загрузки музыки:", e)
+# Музыка
+pygame.mixer.music.load("assets/audio/menu_music.mp3")
+pygame.mixer.music.set_volume(0.5)
+pygame.mixer.music.play(-1)
 
-# Кнопка
-def draw_button(text, center):
-    button_font = pygame.font.SysFont(None, 36)
-    text_render = button_font.render(text, True, WHITE)
-    text_rect = text_render.get_rect(center=center)
-    pygame.draw.rect(screen, (50, 50, 200), text_rect.inflate(20, 10), border_radius=10)
-    screen.blit(text_render, text_rect)
-    return text_rect
-
-# Цикл
+# Игровой цикл
 running = True
 while running:
-    screen.fill((240, 240, 255))
+    screen.fill(WHITE)
     screen.blit(title, (150, 100))
     screen.blit(labubu_img, labubu_rect)
-
-    play_button = draw_button("Играть", (400, 500))
+    pygame.draw.rect(screen, (100, 100, 250), button_rect.inflate(20, 10))
+    screen.blit(button_text, button_rect)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            if play_button.collidepoint(event.pos):
-                print("▶ Переход к первому уровню...")  # здесь позже будет запуск уровня
+            if button_rect.collidepoint(event.pos):
+                print("Переход на уровень 1 🚀")
+                # Здесь позже будет переход на level1
+                # import level1; level1.run_level_1()
 
     pygame.display.flip()
     clock.tick(60)
