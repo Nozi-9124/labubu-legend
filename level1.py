@@ -15,6 +15,8 @@ pygame.mixer.music.load("assets/audio/level1_music.mp3")
 pygame.mixer.music.set_volume(0.4)
 pygame.mixer.music.play(-1)
 
+fail_sound = pygame.mixer.Sound("assets/audio/fail.mp3")
+
 platforms = [
     pygame.Rect(200, 400, 120, 20),
     pygame.Rect(400, 350, 120, 20),
