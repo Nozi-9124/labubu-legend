@@ -1,11 +1,25 @@
 import pygame
 import sys
 
-# === Цвета ===
+pygame.init()
+screen = pygame.display.set_mode((800, 600))
+pygame.display.set_caption("ЛАБУБУ: Уровень 1")
+clock = pygame.time.Clock()
+
 WHITE = (255, 255, 255)
 GROUND_Y = 500
 
-# === Игрок ===
+pygame.mixer.music.load("assets/audio/level1_music.mp3")
+pygame.mixer.music.set_volume(0.4)
+pygame.mixer.music.play(-1)
+
+# === Платформы ===
+platforms = [
+    pygame.Rect(200, 400, 120, 20),
+    pygame.Rect(400, 350, 120, 20),
+    pygame.Rect(600, 300, 120, 20),
+]
+
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
@@ -38,26 +52,24 @@ class Player(pygame.sprite.Sprite):
             self.vel_y = -15
             self.on_ground = False
 
-        self.vel_y += 1  # гравитация
+        self.vel_y += 1
         self.rect.y += self.vel_y
+        self.on_ground = False
 
+        # === Коллизия с платформами ===
+        for platform in platforms:
+            if self.rect.colliderect(platform) and self.vel_y > 0 and self.rect.bottom <= platform.bottom:
+                self.rect.bottom = platform.top
+                self.vel_y = 0
+                self.on_ground = True
+
+        # === Коллизия с землёй ===
         if self.rect.bottom >= GROUND_Y:
             self.rect.bottom = GROUND_Y
             self.vel_y = 0
             self.on_ground = True
 
-# === Главная функция уровня ===
 def run_level_1():
-    pygame.init()
-    screen = pygame.display.set_mode((800, 600))
-    pygame.display.set_caption("ЛАБУБУ: Уровень 1")
-    clock = pygame.time.Clock()
-
-    # Музыка
-    pygame.mixer.music.load("assets/audio/level1_music.mp3")
-    pygame.mixer.music.set_volume(0.4)
-    pygame.mixer.music.play(-1)
-
     player = Player()
     player_group = pygame.sprite.GroupSingle(player)
 
@@ -73,12 +85,15 @@ def run_level_1():
         player_group.update()
         player_group.draw(screen)
 
-        pygame.draw.rect(screen, (70, 40, 0), (0, GROUND_Y, 800, 100))  # земля
+        # Земля
+        pygame.draw.rect(screen, (70, 40, 0), (0, GROUND_Y, 800, 100))
+
+        # Платформы
+        for plat in platforms:
+            pygame.draw.rect(screen, (100, 80, 50), plat)
 
         pygame.display.flip()
         clock.tick(60)
 
-# === Запуск при прямом запуске файла ===
 if __name__ == "__main__":
     run_level_1()
-
