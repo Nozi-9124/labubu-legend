@@ -7,44 +7,84 @@ screen = pygame.display.set_mode((800, 600))
 pygame.display.set_caption("ЛАБУБУ: Меню")
 clock = pygame.time.Clock()
 
+# === Цвета ===
 WHITE = (255, 255, 255)
-font = pygame.font.SysFont(None, 60)
-small_font = pygame.font.SysFont(None, 32)
+HIGHLIGHT_COLOR = (255, 255, 0)
 
-# Загрузка изображения
+# === Звук клика ===
+click_sound = pygame.mixer.Sound("assets/audio/click.wav")
+click_sound.set_volume(0.3)
+
+# === Фон и Лабубу ===
+background = pygame.image.load("assets/images/menu_background.png")
 labubu_img = pygame.image.load("assets/images/labubu_happy.png")
 labubu_img = pygame.transform.scale(labubu_img, (200, 200))
-labubu_rect = labubu_img.get_rect(center=(400, 200))
+labubu_rect = labubu_img.get_rect(center=(400, 150))
 
-# Музыка
+# === Кнопки (изображения) ===
+buttons = {
+    "play": "play_button.png",
+    "music": "music_button.png",
+    "settings": "settings_button.png",
+    "shop": "shop_button.png",
+    "records": "records_button.png",
+    "exit": "exit_button.png"
+}
+
+button_images = {}
+button_rects = {}
+hover_states = {}
+
+for key, filename in buttons.items():
+    img = pygame.image.load(f"assets/images/{filename}")
+    img = pygame.transform.scale(img, (200, 50))
+    button_images[key] = img
+    hover_states[key] = False  # по умолчанию не наведено
+
+# === Позиции кнопок ===
+positions = {
+    "play": (400, 290),
+    "music": (250, 360),
+    "settings": (550, 360),
+    "shop": (250, 430),
+    "records": (550, 430),
+    "exit": (400, 500)
+}
+
+for key in buttons:
+    button_rects[key] = button_images[key].get_rect(center=positions[key])
+
+# === Музыка ===
 pygame.mixer.music.load("assets/audio/menu_music.mp3")
 pygame.mixer.music.set_volume(0.5)
 pygame.mixer.music.play(-1)
 
-# Кнопки
-play_text = font.render("▶ Начать игру", True, (255, 255, 255))
-quit_text = font.render("⏹ Выйти", True, (255, 255, 255))
-
-play_rect = play_text.get_rect(center=(400, 400))
-quit_rect = quit_text.get_rect(center=(400, 480))
-
-def draw_button(text, rect, color):
-    pygame.draw.rect(screen, color, rect.inflate(40, 20))
-    screen.blit(text, rect)
+# === Рисовать кнопку с эффектом наведения и нажатия ===
+def draw_button(key):
+    img = button_images[key]
+    rect = button_rects[key]
+    scale_factor = 1.05 if hover_states[key] else 1.0
+    if scale_factor != 1.0:
+        img = pygame.transform.scale(img, (int(200 * scale_factor), int(50 * scale_factor)))
+        rect = img.get_rect(center=positions[key])
+    screen.blit(img, rect)
+    button_rects[key] = rect
 
 def show_menu():
     running = True
     while running:
-        screen.fill(WHITE)
-
-        # Заголовок
-        title = font.render("ЛАБУБУ: Секрет Бу-Бу-Бу", True, (50, 50, 50))
-        screen.blit(title, (150, 50))
+        screen.blit(background, (0, 0))
         screen.blit(labubu_img, labubu_rect)
 
-        # Кнопки
-        draw_button(play_text, play_rect, (100, 200, 100))
-        draw_button(quit_text, quit_rect, (200, 100, 100))
+        mouse_pos = pygame.mouse.get_pos()
+
+        # Проверка наведения
+        for key in button_rects:
+            hover_states[key] = button_rects[key].collidepoint(mouse_pos)
+
+        # Отображение кнопок
+        for key in button_images:
+            draw_button(key)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -52,13 +92,24 @@ def show_menu():
                 sys.exit()
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                if play_rect.collidepoint(event.pos):
-                    pygame.mixer.music.stop()
-                    os.system("python level1.py")
-                    return
-                elif quit_rect.collidepoint(event.pos):
-                    pygame.quit()
-                    sys.exit()
+                for key, rect in button_rects.items():
+                    if rect.collidepoint(event.pos):
+                        click_sound.play()
+                        if key == "play":
+                            pygame.mixer.music.stop()
+                            os.system("python level1.py")
+                            return
+                        elif key == "music":
+                            print("Музыка: вкл/выкл")
+                        elif key == "settings":
+                            print("Настройки")
+                        elif key == "shop":
+                            print("Магазин")
+                        elif key == "records":
+                            print("Рекорды")
+                        elif key == "exit":
+                            pygame.quit()
+                            sys.exit()
 
         pygame.display.flip()
         clock.tick(60)
