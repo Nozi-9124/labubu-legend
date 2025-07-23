@@ -19,7 +19,7 @@ enemy_img = load_image("assets/images/enemy.png", (50, 50))
 door_img = load_image("assets/images/door.png", (60, 80))
 font = pygame.font.SysFont("Arial", 28)
 
-# === Музыка ===
+# === Музыка и звуки ===
 pygame.mixer.music.load("assets/audio/level2_music.mp3")
 pygame.mixer.music.set_volume(0.5)
 pygame.mixer.music.play(-1)
@@ -47,7 +47,7 @@ enemies = [
 door = pygame.Rect(720, 250, 60, 80)
 score = 0
 lives = 3
-level_time = 45  # чуть меньше времени
+level_time = 45  # секунды
 start_ticks = pygame.time.get_ticks()
 
 platforms = [
@@ -127,19 +127,18 @@ def run_level_2():
                 player.x, player.y = 100, 450
                 if lives <= 0:
                     pygame.mixer.music.stop()
-                    print("Проигрыш!")
+                    os.system("python lose_screen.py")
                     return
 
         if player.colliderect(door):
             pygame.mixer.music.stop()
-            print("Уровень 2 пройден!")
             os.system("python levels/level3.py")
             return
 
         time_left = level_time - (pygame.time.get_ticks() - start_ticks) // 1000
         if time_left <= 0:
             pygame.mixer.music.stop()
-            print("Время вышло!")
+            os.system("python lose_screen.py")
             return
 
         draw_game()
